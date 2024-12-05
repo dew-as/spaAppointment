@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spa Appointment Booking System</title>
+    <!-- Bootstrap CDN link -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+    </style>
+</head>
+
+<body class="container">
+    <div class="container my-5">
+        <h1 class="text-center mb-4">Spa Appointment Booking System</h1>
+        <form id="booking-form">
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label>
+                <input type="text" id="name" name="name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" id="email" name="email" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="phone" class="form-label">Phone:</label>
+                <input type="tel" id="phone" name="phone" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="service" class="form-label">Service:</label>
+                <input type="text" id="service" name="service" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="time" class="form-label">Time:</label>
+                <input type="time" id="time" name="time" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="date" class="form-label">Date:</label>
+                <input type="date" id="date" name="date" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes:</label>
+                <textarea id="notes" name="notes" class="form-control"></textarea>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-between">
+                <button type="submit" id="submit-booking" class="btn btn-primary">Book Appointment</button>
+                <button type="button" id="modify-appointment" class="btn btn-warning">Modify Appointment</button>
+                <button type="button" id="cancel-appointment" class="btn btn-danger">Cancel Appointment</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    
+    <script>
+        const form = document.getElementById('booking-form');
+        const submitButton = document.getElementById('submit-booking');
+        const modifyButton = document.getElementById('modify-appointment');
+        const cancelButton = document.getElementById('cancel-appointment');
+
+        // Handle form submission for booking
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();  // Prevent the default form submit behavior
+
+            const formData = new FormData(form);
+            const data = new URLSearchParams();
+
+            // Convert FormData to URLSearchParams
+            formData.forEach((value, key) => {
+                data.append(key, value);
+            });
+
+            fetch('/submit-booking', {
+                method: 'POST',
+                body: data
+            })
+                .then(response => response.text())
+                .then(data => alert(data))
+                .catch(error => console.error('Error:', error));
+        });
+
+        // Modify appointment logic
+        modifyButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const data = new URLSearchParams();
+
+            // Convert FormData to URLSearchParams
+            formData.forEach((value, key) => {
+                data.append(key, value);
+            });
+
+            fetch('/modify-appointment', {
+                method: 'POST',
+                body: data
+            })
+                .then(response => response.text())
+                .then(data => alert(data))
+                .catch(error => console.error('Error:', error));
+        });
+
+        // Cancel appointment logic
+        cancelButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            const phone = document.getElementById('phone').value;
+            console.log(phone);
+
+            // Send the phone number as form data using URLSearchParams
+            const data = new URLSearchParams();
+            data.append('phone', phone);
+
+            fetch('/cancel-appointment', {
+                method: 'POST',
+                body: data,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'  // This tells the server the type of data
+                }
+            })
+                .then(response => response.text())
+                .then(data => alert(data))
+                .catch(error => console.error('Error:', error));
+        });
+        
+    </script>
+</body>
+
+</html>
